@@ -1,4 +1,4 @@
-// source: https://github.com/maneatingape/advent-of-code-rust/blob/177fc32fbfc3ce814b26b10263b2cc081e121b50/src/util/integer.rs
+// source: https://github.com/maneatingape/advent-of-code-rust/blob/eb38d0bb1591ae5b3eea443433b025f4e99b28a6/src/util/integer.rs
 
 //! Combines common [operators](https://doc.rust-lang.org/book/appendix-02-operators.html)
 //! and constants `0`, `1` and `10` to enable generic methods on integer types.
@@ -16,16 +16,15 @@ pub trait Integer<T>:
     + Div<Output = T>
     + Mul<Output = T>
     + Rem<Output = T>
-    + Shl<Output = T>
-    + Shr<Output = T>
+    + Shl<u32, Output = T>
+    + Shr<u32, Output = T>
     + Sub<Output = T>
 {
     const ZERO: T;
     const ONE: T;
     const TEN: T;
 
-    fn ilog2(self) -> T;
-    fn trailing_zeros(self) -> T;
+    fn trailing_zeros(self) -> u32;
 }
 
 pub trait Unsigned<T>: Integer<T> {}
@@ -40,15 +39,8 @@ macro_rules! integer {
             const TEN: $t = 10;
 
             #[inline]
-            #[allow(trivial_numeric_casts)]
-            fn ilog2(self) -> $t {
-                <$t>::ilog2(self) as $t
-            }
-
-            #[inline]
-            #[allow(trivial_numeric_casts)]
-            fn trailing_zeros(self) -> $t {
-                <$t>::trailing_zeros(self) as $t
+            fn trailing_zeros(self) -> u32 {
+                <$t>::trailing_zeros(self)
             }
         }
     )*)

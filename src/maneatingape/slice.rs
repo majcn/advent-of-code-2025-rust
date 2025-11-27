@@ -1,4 +1,4 @@
-// source: https://github.com/maneatingape/advent-of-code-rust/blob/177fc32fbfc3ce814b26b10263b2cc081e121b50/src/util/slice.rs
+// source: https://github.com/maneatingape/advent-of-code-rust/blob/eb38d0bb1591ae5b3eea443433b025f4e99b28a6/src/util/slice.rs
 
 //! Extension methods for slices.
 //!
@@ -33,11 +33,8 @@ impl<T> SliceOps<T> for &mut [T] {
 
         while i < n {
             if c[i] < i {
-                if i % 2 == 0 {
-                    self.swap(0, i);
-                } else {
-                    self.swap(c[i], i);
-                }
+                let swap_index = if i.is_multiple_of(2) { 0 } else { c[i] };
+                self.swap(swap_index, i);
                 callback(self);
                 c[i] += 1;
                 i = 1;

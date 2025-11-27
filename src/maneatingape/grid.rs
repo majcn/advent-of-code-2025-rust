@@ -1,6 +1,6 @@
-// source: https://github.com/maneatingape/advent-of-code-rust/blob/177fc32fbfc3ce814b26b10263b2cc081e121b50/src/util/grid.rs
+// source: https://github.com/maneatingape/advent-of-code-rust/blob/eb38d0bb1591ae5b3eea443433b025f4e99b28a6/src/util/grid.rs
 
-//! Fast 2 dimensional Grid backed by a single `vec`. This module is designed to work with [`Point`].
+//! Fast 2-dimensional Grid backed by a single `vec`. This module is designed to work with [`Point`].
 //!
 //! The traits [`Index`] and [`IndexMut`] are implemented for [`Point`] to allow usage like:
 //!
@@ -18,15 +18,15 @@
 //!   assert_eq!(grid[point], b'2');
 //! ```
 //!
-//! A convenience [`parse`] method creates a `Grid` directly from a 2 dimenionsal set of
-//! ASCII characters, a common occurence in Advent of Code inputs. The [`same_size_with`] function
-//! creates a grid of the same size, that can be used for in BFS algorithms for tracking visited
-//! location or for tracking cost in Djikstra.
+//! A convenience [`parse`] method creates a `Grid` directly from a 2-dimensional set of
+//! ASCII characters, a common occurrence in Advent of Code inputs. The [`same_size_with`] function
+//! creates a grid of the same size that can be used in BFS algorithms for tracking visited
+//! locations or for tracking cost in Dijkstra.
 //!
-//! [`Point`]: crate::maneatingape::point
+//! [`Point`]: crate::util::point
 //! [`parse`]: Grid::parse
 //! [`same_size_with`]: Grid::same_size_with
-use crate::maneatingape::point::*;
+use super::point::*;
 use std::ops::{Index, IndexMut};
 
 #[derive(Clone, PartialEq, Eq, Hash)]
@@ -40,10 +40,11 @@ impl Grid<u8> {
     #[inline]
     pub fn parse(input: &str) -> Self {
         let raw: Vec<_> = input.lines().map(str::as_bytes).collect();
+
         let width = raw[0].len() as i32;
         let height = raw.len() as i32;
-        let mut bytes = Vec::with_capacity((width * height) as usize);
-        raw.iter().for_each(|slice| bytes.extend_from_slice(slice));
+        let bytes = raw.concat();
+
         Grid {
             width,
             height,
@@ -66,12 +67,11 @@ impl Grid<u8> {
 impl<T: Copy + PartialEq> Grid<T> {
     #[inline]
     pub fn find(&self, needle: T) -> Option<Point> {
-        let to_point = |index| {
+        self.bytes.iter().position(|&h| h == needle).map(|index| {
             let x = (index as i32) % self.width;
             let y = (index as i32) / self.width;
             Point::new(x, y)
-        };
-        self.bytes.iter().position(|&h| h == needle).map(to_point)
+        })
     }
 }
 
