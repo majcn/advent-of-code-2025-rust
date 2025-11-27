@@ -1,4 +1,4 @@
-// source: https://github.com/maneatingape/advent-of-code-rust/blob/177fc32fbfc3ce814b26b10263b2cc081e121b50/src/util/md5.rs
+// source: https://github.com/maneatingape/advent-of-code-rust/blob/eb38d0bb1591ae5b3eea443433b025f4e99b28a6/src/util/md5.rs
 
 //! MD5 hash algorithm
 //!
@@ -13,12 +13,12 @@
 //! [`#[inline]`](https://doc.rust-lang.org/reference/attributes/codegen.html#the-inline-attribute).
 //!
 //! An optional SIMD variant that computes multiple hashes in parallel is also implemented.
-
 pub fn buffer_size(n: usize) -> usize {
     (n + 9).next_multiple_of(64)
 }
 
-pub fn hash(mut buffer: &mut [u8], size: usize) -> (u32, u32, u32, u32) {
+#[inline]
+pub fn hash(buffer: &mut [u8], size: usize) -> [u32; 4] {
     let end = buffer.len() - 8;
     let bits = size * 8;
 
@@ -26,23 +26,14 @@ pub fn hash(mut buffer: &mut [u8], size: usize) -> (u32, u32, u32, u32) {
     buffer[end..].copy_from_slice(&bits.to_le_bytes());
 
     let mut m = [0; 16];
-    let mut a0: u32 = 0x67452301;
-    let mut b0: u32 = 0xefcdab89;
-    let mut c0: u32 = 0x98badcfe;
-    let mut d0: u32 = 0x10325476;
+    let [mut a0, mut b0, mut c0, mut d0] = [0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476];
 
-    while !buffer.is_empty() {
-        let (prefix, suffix) = buffer.split_at_mut(64);
-        buffer = suffix;
-
-        for (i, chunk) in prefix.chunks_exact(4).enumerate() {
+    for block in buffer.chunks_exact(64) {
+        for (i, chunk) in block.chunks_exact(4).enumerate() {
             m[i] = u32::from_le_bytes(chunk.try_into().unwrap());
         }
 
-        let mut a = a0;
-        let mut b = b0;
-        let mut c = c0;
-        let mut d = d0;
+        let [mut a, mut b, mut c, mut d] = [a0, b0, c0, d0];
 
         a = round1(a, b, c, d, m[0], 7, 0xd76aa478);
         d = round1(d, a, b, c, m[1], 12, 0xe8c7b756);
@@ -112,13 +103,15 @@ pub fn hash(mut buffer: &mut [u8], size: usize) -> (u32, u32, u32, u32) {
         c = round4(c, d, a, b, m[2], 15, 0x2ad7d2bb);
         b = round4(b, c, d, a, m[9], 21, 0xeb86d391);
 
-        a0 = a0.wrapping_add(a);
-        b0 = b0.wrapping_add(b);
-        c0 = c0.wrapping_add(c);
-        d0 = d0.wrapping_add(d);
+        [a0, b0, c0, d0] = [
+            a0.wrapping_add(a),
+            b0.wrapping_add(b),
+            c0.wrapping_add(c),
+            d0.wrapping_add(d),
+        ];
     }
 
-    (a0.to_be(), b0.to_be(), c0.to_be(), d0.to_be())
+    [a0.to_be(), b0.to_be(), c0.to_be(), d0.to_be()]
 }
 
 #[inline]

@@ -1,4 +1,4 @@
-// source: https://github.com/maneatingape/advent-of-code-rust/blob/177fc32fbfc3ce814b26b10263b2cc081e121b50/src/util/heap.rs
+// source: https://github.com/maneatingape/advent-of-code-rust/blob/eb38d0bb1591ae5b3eea443433b025f4e99b28a6/src/util/heap.rs
 
 //! [Min heap] more suitable for algorithms such as [Dijkstra] and [A*] than Rust's default
 //! max heap. Splits the sorting key and value, so that you can order items without having
