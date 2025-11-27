@@ -1,4 +1,4 @@
-// source: https://github.com/maneatingape/advent-of-code-rust/blob/177fc32fbfc3ce814b26b10263b2cc081e121b50/src/util/hash.rs
+// source: https://github.com/maneatingape/advent-of-code-rust/blob/eb38d0bb1591ae5b3eea443433b025f4e99b28a6/src/util/hash.rs
 
 //! Provides fast [`HashSet`] and [`HashMap`] implementations based on a simplified implementation of
 //! the fast [Rust C hash algorithm](https://github.com/rust-lang/rustc-hash) also used by
@@ -13,7 +13,7 @@ use std::ops::BitXor as _;
 /// Type alias for [`HashSet`] using [`FxHasher`].
 pub type FastSet<T> = HashSet<T, BuildFxHasher>;
 
-/// Convenience methods to contruct a [`FastSet`].
+/// Convenience methods to construct a [`FastSet`].
 pub trait FastSetBuilder<T> {
     fn new() -> Self;
     fn with_capacity(capacity: usize) -> Self;
@@ -39,7 +39,7 @@ impl<T: Eq + Hash> FastSetBuilder<T> for FastSet<T> {
 /// Type alias for [`HashMap`] using [`FxHasher`].
 pub type FastMap<K, V> = HashMap<K, V, BuildFxHasher>;
 
-/// Convenience methods to contruct a [`FastMap`].
+/// Convenience methods to construct a [`FastMap`].
 pub trait FastMapBuilder<K, V> {
     fn new() -> Self;
     fn with_capacity(capacity: usize) -> Self;
@@ -77,7 +77,7 @@ impl BuildHasher for BuildFxHasher {
 
 /// Simplified implementation, in particular running on a system with 64 bit `usize` is assumed.
 ///
-/// Checkout the [Firefox code](https://searchfox.org/mozilla-central/rev/633345116df55e2d37be9be6555aa739656c5a7d/mfbt/HashFunctions.h#109-153)
+/// Check out the [Firefox code](https://searchfox.org/mozilla-central/rev/633345116df55e2d37be9be6555aa739656c5a7d/mfbt/HashFunctions.h#109-153)
 /// for a full description.
 const K: u64 = 0x517cc1b727220a95;
 

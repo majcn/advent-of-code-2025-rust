@@ -1,10 +1,9 @@
-// source: https://github.com/maneatingape/advent-of-code-rust/blob/177fc32fbfc3ce814b26b10263b2cc081e121b50/src/util/ansi.rs
+// source: https://github.com/maneatingape/advent-of-code-rust/blob/eb38d0bb1591ae5b3eea443433b025f4e99b28a6/src/util/ansi.rs
 
 //! [ANSI escape codes](https://en.wikipedia.org/wiki/ANSI_escape_code)
 //!
 //! These codes allow command line applications to show colored or styled text in most terminals.
 //! Advanced commands can move the cursor or clear the screen.
-
 pub const RESET: &str = "\x1b[0m";
 pub const BOLD: &str = "\x1b[1m";
 pub const RED: &str = "\x1b[31m";

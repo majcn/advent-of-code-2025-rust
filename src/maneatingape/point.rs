@@ -1,6 +1,6 @@
-// source: https://github.com/maneatingape/advent-of-code-rust/blob/177fc32fbfc3ce814b26b10263b2cc081e121b50/src/util/point.rs
+// source: https://github.com/maneatingape/advent-of-code-rust/blob/eb38d0bb1591ae5b3eea443433b025f4e99b28a6/src/util/point.rs
 
-//! Comprehensive 2 dimensional point implementation. This class is designed to work together
+//! Comprehensive 2-dimensional point implementation. This class is designed to work together
 //! with the [`Grid`] class.
 //!
 //! A common theme in Advent of Code is operations in 2 dimensions. This module provides a
@@ -26,7 +26,7 @@
 //! [`clockwise`]: Point::clockwise
 //! [`counter_clockwise`]: Point::counter_clockwise
 //! [`manhattan`]: Point::manhattan
-//! [`Grid`]: crate::maneatingape::grid
+//! [`Grid`]: crate::util::grid
 use std::hash::{Hash, Hasher};
 use std::ops::{Add, AddAssign, Mul, Sub, SubAssign};
 
@@ -88,7 +88,6 @@ impl Point {
 
 impl From<u8> for Point {
     #[inline]
-    #[must_use]
     fn from(value: u8) -> Self {
         match value {
             b'^' | b'U' => UP,
@@ -112,7 +111,6 @@ impl Add for Point {
     type Output = Self;
 
     #[inline]
-    #[must_use]
     fn add(self, rhs: Self) -> Self {
         Point::new(self.x + rhs.x, self.y + rhs.y)
     }
@@ -130,7 +128,6 @@ impl Mul<i32> for Point {
     type Output = Self;
 
     #[inline]
-    #[must_use]
     fn mul(self, rhs: i32) -> Self {
         Point::new(self.x * rhs, self.y * rhs)
     }
@@ -140,7 +137,6 @@ impl Sub for Point {
     type Output = Self;
 
     #[inline]
-    #[must_use]
     fn sub(self, rhs: Self) -> Self {
         Point::new(self.x - rhs.x, self.y - rhs.y)
     }
