@@ -103,12 +103,8 @@ pub fn hash(buffer: &mut [u8], size: usize) -> [u32; 4] {
         c = round4(c, d, a, b, m[2], 15, 0x2ad7d2bb);
         b = round4(b, c, d, a, m[9], 21, 0xeb86d391);
 
-        [a0, b0, c0, d0] = [
-            a0.wrapping_add(a),
-            b0.wrapping_add(b),
-            c0.wrapping_add(c),
-            d0.wrapping_add(d),
-        ];
+        [a0, b0, c0, d0] =
+            [a0.wrapping_add(a), b0.wrapping_add(b), c0.wrapping_add(c), d0.wrapping_add(d)];
     }
 
     [a0.to_be(), b0.to_be(), c0.to_be(), d0.to_be()]
@@ -140,9 +136,5 @@ fn round4(a: u32, b: u32, c: u32, d: u32, m: u32, s: u32, k: u32) -> u32 {
 
 #[inline]
 fn common(f: u32, a: u32, b: u32, m: u32, s: u32, k: u32) -> u32 {
-    f.wrapping_add(a)
-        .wrapping_add(k)
-        .wrapping_add(m)
-        .rotate_left(s)
-        .wrapping_add(b)
+    f.wrapping_add(a).wrapping_add(k).wrapping_add(m).rotate_left(s).wrapping_add(b)
 }

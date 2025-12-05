@@ -13,26 +13,24 @@ pub fn run_multi(days_to_run: &HashSet<Day>, is_release: bool, is_timed: bool) -
     let mut need_space = false;
 
     // NOTE: use non-duplicate, sorted day values.
-    all_days()
-        .filter(|day| days_to_run.contains(day))
-        .for_each(|day| {
-            if need_space {
-                println!();
-            }
-            need_space = true;
+    all_days().filter(|day| days_to_run.contains(day)).for_each(|day| {
+        if need_space {
+            println!();
+        }
+        need_space = true;
 
-            println!("{ANSI_BOLD}Day {day}{ANSI_RESET}");
-            println!("------");
+        println!("{ANSI_BOLD}Day {day}{ANSI_RESET}");
+        println!("------");
 
-            let output = child_commands::run_solution(day, is_timed, is_release).unwrap();
+        let output = child_commands::run_solution(day, is_timed, is_release).unwrap();
 
-            if output.is_empty() {
-                println!("Not solved.");
-            } else {
-                let val = child_commands::parse_exec_time(&output, day);
-                timings.push(val);
-            }
-        });
+        if output.is_empty() {
+            println!("Not solved.");
+        } else {
+            let val = child_commands::parse_exec_time(&output, day);
+            timings.push(val);
+        }
+    });
 
     if is_timed {
         let timings = Timings { data: timings };
@@ -129,12 +127,7 @@ pub mod child_commands {
     }
 
     pub fn parse_exec_time(output: &[String], day: Day) -> super::Timing {
-        let mut timings = super::Timing {
-            day,
-            part_1: None,
-            part_2: None,
-            total_nanos: 0_f64,
-        };
+        let mut timings = super::Timing { day, part_1: None, part_2: None, total_nanos: 0_f64 };
 
         output
             .iter()
@@ -170,14 +163,8 @@ pub mod child_commands {
 
     fn parse_time(line: &str) -> Option<(&str, f64)> {
         // for possible time formats, see: https://github.com/rust-lang/rust/blob/1.64.0/library/core/src/time.rs#L1176-L1200
-        let str_timing = line
-            .split(" samples)")
-            .next()?
-            .split('(')
-            .next_back()?
-            .split('@')
-            .next()?
-            .trim();
+        let str_timing =
+            line.split(" samples)").next()?.split('(').next_back()?.split('@').next()?.trim();
 
         let parsed_timing = match str_timing {
             s if s.contains("ns") => s.split("ns").next()?.parse::<f64>().ok(),
@@ -194,12 +181,7 @@ pub mod child_commands {
     macro_rules! assert_approx_eq {
         ($a:expr, $b:expr) => {{
             let (a, b) = (&$a, &$b);
-            assert!(
-                (*a - *b).abs() < 1.0e-6,
-                "{} is not approximately equal to {}",
-                *a,
-                *b
-            );
+            assert!((*a - *b).abs() < 1.0e-6, "{} is not approximately equal to {}", *a, *b);
         }};
     }
 
@@ -242,11 +224,7 @@ pub mod child_commands {
         #[test]
         fn parses_missing_parts() {
             let res = parse_exec_time(
-                &[
-                    "Part 1: ✖        ".into(),
-                    "Part 2: ✖        ".into(),
-                    "".into(),
-                ],
+                &["Part 1: ✖        ".into(), "Part 2: ✖        ".into(), "".into()],
                 day!(1),
             );
             assert_approx_eq!(res.total_nanos, 0_f64);

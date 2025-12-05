@@ -59,17 +59,11 @@ impl<S: AsRef<str>> ParseOps for S {
     }
 
     fn iter_unsigned<T: Unsigned<T>>(&self) -> ParseUnsigned<'_, T> {
-        ParseUnsigned {
-            bytes: self.as_ref().bytes(),
-            phantom: PhantomData,
-        }
+        ParseUnsigned { bytes: self.as_ref().bytes(), phantom: PhantomData }
     }
 
     fn iter_signed<T: Signed<T>>(&self) -> ParseSigned<'_, T> {
-        ParseSigned {
-            bytes: self.as_ref().bytes(),
-            phantom: PhantomData,
-        }
+        ParseSigned { bytes: self.as_ref().bytes(), phantom: PhantomData }
     }
 }
 

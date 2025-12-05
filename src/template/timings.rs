@@ -61,9 +61,7 @@ impl Timings {
     }
 
     pub fn is_day_complete(&self, day: Day) -> bool {
-        self.data
-            .iter()
-            .any(|t| t.day == day && t.part_1.is_some() && t.part_2.is_some())
+        self.data.iter().any(|t| t.day == day && t.part_1.is_some() && t.part_2.is_some())
     }
 }
 
@@ -96,12 +94,7 @@ impl TryFrom<String> for Timings {
             .get::<Vec<JsonValue>>()
             .ok_or("expected `json.data` to be an array.")?;
 
-        Ok(Timings {
-            data: json_data
-                .iter()
-                .map(Timing::try_from)
-                .collect::<Result<_, _>>()?,
-        })
+        Ok(Timings { data: json_data.iter().map(Timing::try_from).collect::<Result<_, _>>()? })
     }
 }
 
@@ -166,12 +159,7 @@ impl TryFrom<&JsonValue> for Timing {
             .and_then(|v| v.get::<f64>().copied())
             .ok_or("Expected timing.total_nanos to be a number.")?;
 
-        Ok(Timing {
-            day,
-            part_1: part_1.cloned(),
-            part_2: part_2.cloned(),
-            total_nanos,
-        })
+        Ok(Timing { day, part_1: part_1.cloned(), part_2: part_2.cloned(), total_nanos })
     }
 }
 
@@ -305,12 +293,7 @@ mod tests {
         #[test]
         fn handles_uncompleted_days() {
             let timings = Timings {
-                data: vec![Timing {
-                    day: day!(1),
-                    part_1: None,
-                    part_2: None,
-                    total_nanos: 0.0,
-                }],
+                data: vec![Timing { day: day!(1), part_1: None, part_2: None, total_nanos: 0.0 }],
             };
 
             assert_eq!(timings.is_day_complete(&day!(1)), false);
@@ -329,12 +312,7 @@ mod tests {
         fn handles_disjunct_timings() {
             let timings = get_mock_timings();
             let other = Timings {
-                data: vec![Timing {
-                    day: day!(3),
-                    part_1: None,
-                    part_2: None,
-                    total_nanos: 0_f64,
-                }],
+                data: vec![Timing { day: day!(3), part_1: None, part_2: None, total_nanos: 0_f64 }],
             };
             let merged = timings.merge(&other);
             assert_eq!(merged.data.len(), 4);
@@ -349,12 +327,7 @@ mod tests {
             let timings = get_mock_timings();
 
             let other = Timings {
-                data: vec![Timing {
-                    day: day!(2),
-                    part_1: None,
-                    part_2: None,
-                    total_nanos: 0_f64,
-                }],
+                data: vec![Timing { day: day!(2), part_1: None, part_2: None, total_nanos: 0_f64 }],
             };
             let merged = timings.merge(&other);
 

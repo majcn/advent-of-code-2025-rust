@@ -26,10 +26,7 @@ where
             handles.push(handle);
         }
 
-        handles
-            .into_iter()
-            .flat_map(ScopedJoinHandle::join)
-            .collect()
+        handles.into_iter().flat_map(ScopedJoinHandle::join).collect()
     })
 }
 
@@ -66,10 +63,7 @@ where
             handles.push(handle);
         }
 
-        handles
-            .into_iter()
-            .flat_map(ScopedJoinHandle::join)
-            .collect()
+        handles.into_iter().flat_map(ScopedJoinHandle::join).collect()
     })
 }
 
@@ -141,9 +135,7 @@ pub struct CachePadding {
 impl CachePadding {
     #[inline]
     fn new(n: usize) -> Self {
-        CachePadding {
-            atomic: AtomicUsize::new(n),
-        }
+        CachePadding { atomic: AtomicUsize::new(n) }
     }
 
     #[inline]
@@ -163,9 +155,7 @@ impl CachePadding {
 
     #[inline]
     fn compare_exchange(&self, current: usize, new: usize) -> bool {
-        self.atomic
-            .compare_exchange(current, new, Relaxed, Relaxed)
-            .is_ok()
+        self.atomic.compare_exchange(current, new, Relaxed, Relaxed).is_ok()
     }
 }
 
@@ -188,17 +178,11 @@ pub struct AtomicIter {
 
 impl AtomicIter {
     pub fn new(start: u32, step: u32) -> Self {
-        AtomicIter {
-            running: AtomicBool::new(true),
-            index: AtomicU32::from(start),
-            step,
-        }
+        AtomicIter { running: AtomicBool::new(true), index: AtomicU32::from(start), step }
     }
 
     pub fn next(&self) -> Option<u32> {
-        self.running
-            .load(Relaxed)
-            .then(|| self.index.fetch_add(self.step, Relaxed))
+        self.running.load(Relaxed).then(|| self.index.fetch_add(self.step, Relaxed))
     }
 
     pub fn stop(&self) {
