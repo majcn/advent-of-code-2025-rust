@@ -26,10 +26,7 @@ impl Display for AocCommandError {
 }
 
 pub fn check() -> Result<(), AocCommandError> {
-    Command::new("aoc")
-        .arg("-V")
-        .output()
-        .map_err(|_| AocCommandError::CommandNotFound)?;
+    Command::new("aoc").arg("-V").output().map_err(|_| AocCommandError::CommandNotFound)?;
     Ok(())
 }
 
@@ -38,11 +35,7 @@ pub fn read(day: Day) -> Result<Output, AocCommandError> {
 
     let args = build_args(
         "read",
-        &[
-            "--description-only".into(),
-            "--puzzle-file".into(),
-            puzzle_path,
-        ],
+        &["--description-only".into(), "--puzzle-file".into(), puzzle_path],
         day,
     );
 
@@ -117,9 +110,5 @@ fn call_aoc_cli(args: &[String]) -> Result<Output, AocCommandError> {
         .output()
         .map_err(|_| AocCommandError::CommandNotCallable)?;
 
-    if output.status.success() {
-        Ok(output)
-    } else {
-        Err(AocCommandError::BadExitStatus(output))
-    }
+    if output.status.success() { Ok(output) } else { Err(AocCommandError::BadExitStatus(output)) }
 }

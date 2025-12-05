@@ -20,11 +20,7 @@ fn safe_create_file(path: &str, overwrite: bool) -> Result<File, std::io::Error>
 }
 
 fn create_file(path: &str) -> Result<File, std::io::Error> {
-    OpenOptions::new()
-        .write(true)
-        .create(true)
-        .truncate(true)
-        .open(path)
+    OpenOptions::new().write(true).create(true).truncate(true).open(path)
 }
 
 pub fn handle(day: Day, overwrite: bool) {
@@ -41,9 +37,7 @@ pub fn handle(day: Day, overwrite: bool) {
     };
 
     match file.write_all(
-        MODULE_TEMPLATE
-            .replace("%DAY_NUMBER%", &day.into_inner().to_string())
-            .as_bytes(),
+        MODULE_TEMPLATE.replace("%DAY_NUMBER%", &day.into_inner().to_string()).as_bytes(),
     ) {
         Ok(()) => {
             println!("Created module file \"{}\"", &module_path);

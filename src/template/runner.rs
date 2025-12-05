@@ -75,11 +75,7 @@ fn bench<I: Copy, T>(func: impl Fn(I) -> T, input: I, base_time: &Duration) -> (
 }
 
 fn average_duration(numbers: &[Duration]) -> u128 {
-    numbers
-        .iter()
-        .map(std::time::Duration::as_nanos)
-        .sum::<u128>()
-        / numbers.len() as u128
+    numbers.iter().map(std::time::Duration::as_nanos).sum::<u128>() / numbers.len() as u128
 }
 
 fn format_duration(duration: &Duration, samples: u128) -> String {

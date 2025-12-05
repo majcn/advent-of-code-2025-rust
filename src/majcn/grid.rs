@@ -14,12 +14,7 @@ pub struct GridPointsIter {
 
 impl<T> GridPointsIterator for Grid<T> {
     fn points(&self) -> GridPointsIter {
-        GridPointsIter {
-            x: 0,
-            y: 0,
-            width: self.width,
-            height: self.height,
-        }
+        GridPointsIter { x: 0, y: 0, width: self.width, height: self.height }
     }
 }
 

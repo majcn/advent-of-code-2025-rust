@@ -44,25 +44,15 @@ mod args {
         let mut args = pico_args::Arguments::from_env();
 
         let app_args = match args.subcommand()?.as_deref() {
-            Some("all") => AppArguments::All {
-                release: args.contains("--release"),
-            },
+            Some("all") => AppArguments::All { release: args.contains("--release") },
             Some("time") => {
                 let all = args.contains("--all");
                 let store = args.contains("--store");
 
-                AppArguments::Time {
-                    all,
-                    day: args.opt_free_from_str()?,
-                    store,
-                }
+                AppArguments::Time { all, day: args.opt_free_from_str()?, store }
             }
-            Some("download") => AppArguments::Download {
-                day: args.free_from_str()?,
-            },
-            Some("read") => AppArguments::Read {
-                day: args.free_from_str()?,
-            },
+            Some("download") => AppArguments::Download { day: args.free_from_str()? },
+            Some("read") => AppArguments::Read { day: args.free_from_str()? },
             Some("scaffold") => AppArguments::Scaffold {
                 day: args.free_from_str()?,
                 download: args.contains("--download"),
@@ -106,22 +96,15 @@ fn main() {
             AppArguments::Time { day, all, store } => time::handle(day, all, store),
             AppArguments::Download { day } => download::handle(day),
             AppArguments::Read { day } => read::handle(day),
-            AppArguments::Scaffold {
-                day,
-                download,
-                overwrite,
-            } => {
+            AppArguments::Scaffold { day, download, overwrite } => {
                 scaffold::handle(day, overwrite);
                 if download {
                     download::handle(day);
                 }
             }
-            AppArguments::Solve {
-                day,
-                release,
-                dhat,
-                submit,
-            } => solve::handle(day, release, dhat, submit),
+            AppArguments::Solve { day, release, dhat, submit } => {
+                solve::handle(day, release, dhat, submit)
+            }
             #[cfg(feature = "today")]
             AppArguments::Today => {
                 match Day::today() {
