@@ -32,10 +32,7 @@ impl Parse for CacheOption {
             let key_function_name = Ident::new(key_function_name_str, input.span());
             let key_function_return = Ident::new(key_function_return_str, input.span());
 
-            return Ok(CacheOption::KeyFunction(
-                key_function_name,
-                key_function_return,
-            ));
+            return Ok(CacheOption::KeyFunction(key_function_name, key_function_return));
         }
 
         Err(la.error())
@@ -71,12 +68,7 @@ fn parse_sig_inputs(sig: &Signature) -> (Vec<Pat>, Vec<Type>) {
 pub fn memoize_impl(attr: TokenStream, item: TokenStream) -> TokenStream {
     let options: CacheOptions = syn::parse(attr).unwrap();
 
-    let ItemFn {
-        sig,
-        vis,
-        block,
-        attrs,
-    } = parse_macro_input!(item as ItemFn);
+    let ItemFn { sig, vis, block, attrs } = parse_macro_input!(item as ItemFn);
 
     let (fn_input_names, fn_input_types) = parse_sig_inputs(&sig);
 
@@ -97,14 +89,13 @@ pub fn memoize_impl(attr: TokenStream, item: TokenStream) -> TokenStream {
 
     let internal_fn_name = format!("__{}_internal", sig.ident);
     let cache_static_var_name = format!("__CACHE_{}", sig.ident.to_string().to_uppercase());
+    let reset_fn_name = format!("{}_reset_memoize", sig.ident);
 
     let internal_fn_ident = Ident::new(&internal_fn_name, sig.span());
     let cache_static_var_ident = Ident::new(&cache_static_var_name, sig.span());
+    let reset_fn_ident = Ident::new(&reset_fn_name, sig.span());
 
-    let internal_sig = Signature {
-        ident: internal_fn_ident.clone(),
-        ..sig.clone()
-    };
+    let internal_sig = Signature { ident: internal_fn_ident.clone(), ..sig.clone() };
 
     quote!(
         thread_local! {
@@ -113,6 +104,13 @@ pub fn memoize_impl(attr: TokenStream, item: TokenStream) -> TokenStream {
 
         #(#attrs)*
         #vis #internal_sig #block
+
+        /// Clears the memoization cache for benchmarking purposes by replacing it with a new instance.
+        #vis fn #reset_fn_ident() {
+            #cache_static_var_ident.with(|cache| {
+                *cache.borrow_mut() = advent_of_code::maneatingape::hash::FastMapBuilder::new();
+            });
+        }
 
         #(#attrs)*
         #vis #sig {
