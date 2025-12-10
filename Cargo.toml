@@ -31,3 +31,4 @@ tinyjson = "2.5.1"
 advent_of_code_macros = { path = "./macros" }
 
 # Solution dependencies
+z3 = "0.19.5"
